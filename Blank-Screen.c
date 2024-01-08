@@ -12,7 +12,6 @@ int main(void)
 
     SDL_Window *window = SDL_CreateWindow("Blank Screen", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0,
                                           SDL_WINDOW_FULLSCREEN_DESKTOP);
-
     if (!window)
     {
         fprintf(stderr, "Failed to create window\n");
@@ -20,8 +19,25 @@ int main(void)
         return EXIT_FAILURE;
     }
 
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    if (!renderer)
+    {
+        fprintf(stderr, "Failed to create renderer\n");
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return EXIT_FAILURE;
+    }
+
+    SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 1280, 720);
+
+    SDL_SetRenderTarget(renderer, texture);
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
     SDL_Event event;
     int quit = 0;
+
     while (!quit)
     {
         while (SDL_PollEvent(&event) != 0)
